@@ -16,4 +16,7 @@ export default defineNuxtConfig({
   supabase: {
     redirect: false,
   },
+  routeRules: {
+    '/settings/**': { ssr: false },
+  },
 })
