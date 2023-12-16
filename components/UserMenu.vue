@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO: UI shifted here cause by Avatar
 import { EnterIcon, ExitIcon, GithubLogoIcon, Pencil1Icon, PersonIcon } from '@radix-icons/vue'
 
 const user = useSupabaseUser()
@@ -20,16 +19,18 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div>
+  <div class="h-10 w-10">
     <UiDropdownMenu>
-      <UiDropdownMenuTrigger>
-        <UiAvatar v-if="user">
-          <UiAvatarImage :src="profile?.avatar_url ?? ''" />
-          <UiAvatarFallback>{{ profile?.full_name }}</UiAvatarFallback>
-        </UiAvatar>
-        <div v-else class="border rounded-full p-2 bg-gray-50">
-          <PersonIcon class="w-5 h-5 text-gray-400" />
-        </div>
+      <UiDropdownMenuTrigger as-child>
+        <UiButton class="p-0 h-10 w-10 rounded-full" variant="ghost">
+          <UiAvatar v-if="user">
+            <UiAvatarImage :src="profile?.avatar_url ?? ''" />
+            <UiAvatarFallback>{{ profile?.full_name?.[0] }}</UiAvatarFallback>
+          </UiAvatar>
+          <div v-else class="border rounded-full p-2 bg-gray-50">
+            <PersonIcon class="w-5 h-5 text-gray-400" />
+          </div>
+        </UiButton>
       </UiDropdownMenuTrigger>
 
       <UiDropdownMenuContent v-if="user" class="w-56" align="end">
