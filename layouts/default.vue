@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const user = useSupabaseUser()
+import { CalendarIcon, Pencil1Icon } from '@radix-icons/vue'
+
+const route = useRoute()
+console.log(route)
+const { slug } = useProfile()
 </script>
 
 <template>
@@ -11,11 +15,20 @@ const user = useSupabaseUser()
       <div class="mx-auto" />
 
       <div class="flex items-center gap-4">
-        <UiButton v-if="user?.id" as-child variant="ghost">
-          <NuxtLink to="/settings/profile">
-            Settings
-          </NuxtLink>
-        </UiButton>
+        <template v-if="slug">
+          <UiButton v-if="route.name !== 'u-username'" as-child variant="ghost" class="gap-2">
+            <NuxtLink :to="`/u/${slug}`">
+              <CalendarIcon />
+              <span>My Calendar</span>
+            </NuxtLink>
+          </UiButton>
+          <UiButton v-else as-child variant="ghost" class="gap-2">
+            <NuxtLink to="/">
+              <Pencil1Icon />
+              <span>Edit Calendar</span>
+            </NuxtLink>
+          </UiButton>
+        </template>
         <UserMenu />
       </div>
     </header>
