@@ -7,7 +7,8 @@ const route = useRoute()
 const username = computed(() => route.params.username ?? '')
 
 const el = ref<HTMLElement>()
-// const { } = useScroll(el)
+// const { width } = useElementSize(el)
+// const { x } = useScroll(el)
 onMounted(() => {
   if (!el.value)
     return
@@ -17,7 +18,7 @@ onMounted(() => {
     // el.value?.scrollLeft += event.deltaY
     el.value?.scroll({
       left: el.value.scrollLeft + event.deltaY,
-      // behavior: 'smooth',
+      behavior: 'smooth',
     })
   })
 })
@@ -39,12 +40,12 @@ const groupedEvents = computed(() => groupBy(data.value, 'date'))
   <div ref="el" class=" overflow-x-hidden">
     <div class="flex h-full w-full">
       <div v-for="(group, key) of groupedEvents" :key="key" class="shrink-0 w-[20vw] relative flex flex-col">
-        <div class="text-center border-b pb-4">
+        <div class="text-center pb-4">
           <span class="font-medium ">{{ format(new Date(key), 'd MMM') }}</span>
         </div>
 
         <div class="grid grid-rows-4 grid-flow-row-dense h-full border-r p-1 pb-24">
-          <div v-for="event in group" :key="event.id" class="bg-yellow-100 w-full h-full rounded-xl p-4">
+          <div v-for="event in group" :key="event.id" class="bg-yellow-50 border border-yellow-200 w-full h-full rounded-xl p-4">
             {{ event.title }}
           </div>
         </div>
