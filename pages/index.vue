@@ -3,7 +3,7 @@ import { colors } from '@/types/enum'
 </script>
 
 <template>
-  <div>
+  <div class="mx-auto">
     <section class="flex flex-col p-24 items-center w-full">
       <h1 class="text-5xl lg:text-6xl font-bold text-center">
         Create your Memory Lane for 2023
