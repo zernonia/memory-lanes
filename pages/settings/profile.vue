@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { h, ref } from 'vue'
-import { FieldArray, useForm } from 'vee-validate'
+import { h } from 'vue'
+import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-import { Cross1Icon } from '@radix-icons/vue'
-import { cn } from '@/lib/utils'
 import { toast } from '@/components/ui/toast'
 
 const user = useSupabaseUser()

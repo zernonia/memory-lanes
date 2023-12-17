@@ -15,10 +15,12 @@ onMounted(() => {
 
   el.value.addEventListener('wheel', (event) => {
     event.preventDefault()
-    // el.value?.scrollLeft += event.deltaY
+    const isMouse = 'wheelDelta' in event && Math.abs(event.wheelDelta as number) > 100
+    const offset = isMouse ? event.deltaY : event.deltaX
+
     el.value?.scroll({
-      left: el.value.scrollLeft + event.deltaY,
-      behavior: 'smooth',
+      left: el.value.scrollLeft + offset,
+      behavior: isMouse ? 'smooth' : 'instant',
     })
   })
 })
@@ -37,17 +39,15 @@ const groupedEvents = computed(() => groupBy(data.value, 'date'))
 </script>
 
 <template>
-  <div ref="el" class=" overflow-x-hidden">
+  <div ref="el" class="no-scrollbar overflow-auto">
     <div class="flex h-full w-full">
-      <div v-for="(group, key) of groupedEvents" :key="key" class="shrink-0 w-[20vw] relative flex flex-col">
+      <div v-for="(group, key) of groupedEvents" :key="key" class="shrink-0 w-[60vw] md:w-[40vw] xl:w-[20vw] relative flex flex-col">
         <div class="text-center pb-4">
           <span class="font-medium ">{{ format(new Date(key), 'd MMM') }}</span>
         </div>
 
         <div class="grid grid-rows-4 grid-flow-row-dense h-full border-r p-1 pb-24">
-          <div v-for="event in group" :key="event.id" class="bg-yellow-50 border border-yellow-200 w-full h-full rounded-xl p-4">
-            {{ event.title }}
-          </div>
+          <EventCard v-for="event in group" :key="event.id" :event="event" />
         </div>
       </div>
     </div>

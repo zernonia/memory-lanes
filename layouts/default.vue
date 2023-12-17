@@ -2,7 +2,6 @@
 import { CalendarIcon, Pencil1Icon } from '@radix-icons/vue'
 
 const route = useRoute()
-console.log(route)
 const { slug } = useProfile()
 </script>
 
@@ -23,7 +22,7 @@ const { slug } = useProfile()
             </NuxtLink>
           </UiButton>
           <UiButton v-else as-child variant="ghost" class="gap-2">
-            <NuxtLink to="/">
+            <NuxtLink to="/edit">
               <Pencil1Icon />
               <span>Edit Calendar</span>
             </NuxtLink>

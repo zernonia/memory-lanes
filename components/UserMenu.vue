@@ -46,7 +46,7 @@ async function handleLogout() {
           </UiDropdownMenuItem>
 
           <UiDropdownMenuItem as-child>
-            <NuxtLink to="/">
+            <NuxtLink to="/edit">
               <Pencil1Icon class="mr-2 h-4 w-4" />
               <span>Edit Calendar</span>
             </NuxtLink>

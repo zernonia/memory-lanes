@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxtjs/supabase', '@vueuse/nuxt', 'nuxt-icons'],
+  modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', '@nuxtjs/supabase', '@vueuse/nuxt', 'nuxt-icons', '@pinia/nuxt'],
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -18,5 +18,8 @@ export default defineNuxtConfig({
   },
   routeRules: {
     '/settings/**': { ssr: false },
+  },
+  pinia: {
+    storesDirs: ['./stores/**'],
   },
 })
