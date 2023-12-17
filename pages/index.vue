@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { colors } from '@/types/enum'
+
+const user = useSupabaseUser()
 </script>
 
 <template>
@@ -13,8 +15,10 @@ import { colors } from '@/types/enum'
         and share with your friends!
       </h2>
 
-      <UiButton size="lg">
-        Create yours now!
+      <UiButton size="lg" as-child>
+        <NuxtLink :to=" user?.id ? '/edit' : '/login'">
+          Create yours now!
+        </NuxtLink>
       </UiButton>
     </section>
 

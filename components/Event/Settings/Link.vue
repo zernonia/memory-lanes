@@ -16,7 +16,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="grid grid-cols-2 gap-6 mt-4">
+  <div class="grid lg:grid-cols-2 gap-6 mt-4">
     <UiFormField v-slot="{ componentField }" name="metadata.url">
       <UiFormItem>
         <UiFormLabel>Url</UiFormLabel>

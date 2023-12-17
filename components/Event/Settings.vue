@@ -10,9 +10,13 @@ import EventSettingsLink from '@/components/Event/Settings/Link.vue'
 import EventSettingsAlbum from '@/components/Event/Settings/Album.vue'
 
 const props = defineProps<{
-  event: Event
+  event?: Event
+}>()
+const emits = defineEmits<{
+  save: []
 }>()
 
+const user = useSupabaseUser()
 const client = useSupabaseClient<Database>()
 const store = useEditStore()
 
@@ -38,11 +42,11 @@ const validationSchema = computed(() => {
 const { handleSubmit, resetForm, values, meta, setValues } = useForm({
   validationSchema,
   initialValues: {
-    title: props.event.title,
-    date: new Date(props.event.date),
-    color: props.event.color ?? 'Transparent',
-    type: props.event.type ?? 'link',
-    metadata: props.event.metadata as any,
+    title: props.event?.title,
+    date: props.event?.date ? new Date(props.event?.date) : new Date(),
+    color: props.event?.color ?? 'Transparent',
+    type: props.event?.type ?? 'link',
+    metadata: props.event?.metadata as any,
   },
 })
 
@@ -61,11 +65,13 @@ const onSubmit = handleSubmit(async (values) => {
 
   isLoading.value = true
   console.log(values)
-  await client.from('events').update(store.event).eq('id', store.event.id)
+  await client.from('events').upsert({ ...store.event, user_id: user.value?.id ?? '' })
+
   // toast({
   //   title: 'You submitted the following values:',
   //   description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
   // })
+  emits('save')
   isLoading.value = false
 })
 
@@ -88,7 +94,7 @@ watch(values, (n) => {
       <h2 class="text-lg text-foreground font-semibold leading-none tracking-tight">
         Main Section
       </h2>
-      <div class="grid grid-cols-2 gap-6 mt-4">
+      <div class="grid lg:grid-cols-2 gap-6 mt-4">
         <UiFormField v-slot="{ componentField }" name="title">
           <UiFormItem>
             <UiFormLabel>Title</UiFormLabel>

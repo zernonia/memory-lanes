@@ -22,7 +22,7 @@ defineExpose({
 
 const user = useSupabaseUser()
 const client = useSupabaseClient()
-const images = computed(() => props.metadata?.images.filter(Boolean) ?? [])
+const images = computed(() => props.metadata?.images?.filter(Boolean) ?? [])
 const imageLength = computed(() => images.value.length)
 
 const externalImageUrl = ref('')
@@ -74,7 +74,7 @@ function removeImage(index: number) {
 </script>
 
 <template>
-  <div class="grid grid-cols-2 gap-6 mt-4">
+  <div class="grid lg:grid-cols-2 gap-6 mt-4">
     <UiFormField v-for="length in imageLength" v-slot="{ componentField }" :key="length" :name="`metadata.images[${length - 1}]`">
       <AvatarRoot as="div" class="group relative">
         <AvatarImage :src="componentField.modelValue" class="h-[12rem] w-full object-cover rounded-xl" />
