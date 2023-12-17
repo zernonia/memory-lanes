@@ -1,14 +1,29 @@
 <script setup lang="ts">
-import { Pencil2Icon } from '@radix-icons/vue'
+import { Primitive } from 'radix-vue'
+import { EventCardAlbum, EventCardLink } from '#components'
 import type { Event } from '@/types'
+import { colors } from '@/types/enum'
 
 defineProps<{
   event: Event
 }>()
+
+const mapType = {
+  link: EventCardLink,
+  album: EventCardAlbum,
+}
 </script>
 
 <template>
-  <div class="bg-yellow-50 relative border border-yellow-200 w-full h-full rounded-xl p-4">
-    {{ event.title }}
-  </div>
+  <Primitive
+    as-child
+    class="bg-[var(--color)] relative flex flex-col border-[5px] border-white w-full h-full rounded-xl p-4 shadow-none transition duration-300 active:scale-[97.5%]"
+    :class="{
+      'hover:shadow-xl': event.color !== 'Transparent',
+    }"
+    :style="{ '--color': colors[event.color!] }"
+    draggable="false"
+  >
+    <component :is="mapType[event.type as keyof typeof mapType]" :event="event" />
+  </Primitive>
 </template>

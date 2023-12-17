@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { EventColor } from '@/types'
+import { colors } from '@/types/enum'
 
 defineOptions({
   inheritAttrs: false,
@@ -9,14 +10,6 @@ const props = defineProps<{ modelValue?: EventColor }>()
 const emits = defineEmits<{
   'update:modelValue': [val: EventColor]
 }>()
-const colors = {
-  Red: '#ffd2cc',
-  Blue: '#c6deeb',
-  Yellow: '#fbedcf',
-  Green: '#d9ecda',
-  Gray: '#e6e6e5',
-  Transparent: '#ffffff',
-}
 
 const modelValue = useVModel(props, 'modelValue', emits)
 </script>

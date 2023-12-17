@@ -3,60 +3,80 @@ import { format } from 'date-fns'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
-import { getValues } from '@/lib/utils'
-import type { Event, EventColor } from '~/types'
+import { getKeys, getValues } from '@/lib/utils'
+import type { Database, Event } from '~/types'
+import { colors, eventType } from '@/types/enum'
+import EventSettingsLink from '@/components/Event/Settings/Link.vue'
+import EventSettingsAlbum from '@/components/Event/Settings/Album.vue'
 
 const props = defineProps<{
   event: Event
 }>()
 
-const eventType = {
-  Album: 'album',
-  Story: 'story',
-  Link: 'link',
-} as const
-
+const client = useSupabaseClient<Database>()
 const store = useEditStore()
 
-const validationSchema = toTypedSchema(z.object({
-  title: z
-    .string()
-    .min(2, {
-      message: 'Username must be at least 2 characters.',
-    }),
-  date: z.date(),
-  color:
-    z.string().optional(),
-  type:
-    z.enum(getValues(eventType)),
-}))
+const subSectionInstance = ref<InstanceType<typeof EventSettingsLink | typeof EventSettingsAlbum>>()
 
-const { handleSubmit, resetForm, values } = useForm({
+const validationSchema = computed(() => {
+  const metadata = subSectionInstance.value?.schema ?? z.any()
+  return toTypedSchema(z.object({
+    title: z
+      .string()
+      .min(2, {
+        message: 'Username must be at least 2 characters.',
+      }),
+    date: z.date(),
+    color:
+    z.enum(getKeys(colors)),
+    type:
+    z.enum(getValues(eventType)),
+    metadata,
+  }))
+})
+
+const { handleSubmit, resetForm, values, meta, setValues } = useForm({
   validationSchema,
   initialValues: {
     title: props.event.title,
     date: new Date(props.event.date),
     color: props.event.color ?? 'Transparent',
     type: props.event.type ?? 'link',
+    metadata: props.event.metadata as any,
   },
 })
 
-const onSubmit = handleSubmit((values) => {
+function handleAlbumUpdate(val: string[]) {
+  setValues({
+    metadata: {
+      images: val,
+    },
+  })
+}
+
+const isLoading = ref(false)
+const onSubmit = handleSubmit(async (values) => {
+  if (!store.event)
+    return
+
+  isLoading.value = true
   console.log(values)
+  await client.from('events').update(store.event).eq('id', store.event.id)
   // toast({
   //   title: 'You submitted the following values:',
   //   description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
   // })
+  isLoading.value = false
 })
 
 watch(values, (n) => {
+  console.log(n)
   if (!n.date)
     return
 
-  // @ts-expect-error Type instationation warning
   store.event = {
     ...props.event,
-    title: n.title ?? '',
+    ...n,
     date: format(n.date, 'yyyy-MM-dd'),
   }
 }, { immediate: true })
@@ -64,73 +84,87 @@ watch(values, (n) => {
 
 <template>
   <div class="rounded-2xl my-4 border">
-    <form class="grid grid-cols-2 gap-6" @submit="onSubmit">
-      <UiFormField v-slot="{ componentField }" name="title">
-        <UiFormItem>
-          <UiFormLabel>Title</UiFormLabel>
-          <UiFormControl>
-            <UiInput type="text" placeholder="" v-bind="componentField" />
-          </UiFormControl>
-          <UiFormDescription>
-            This is your public display name. It can be your real name or a pseudonym.
-          </UiFormDescription>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+    <form @submit="onSubmit">
+      <h2 class="text-lg text-foreground font-semibold leading-none tracking-tight">
+        Main Section
+      </h2>
+      <div class="grid grid-cols-2 gap-6 mt-4">
+        <UiFormField v-slot="{ componentField }" name="title">
+          <UiFormItem>
+            <UiFormLabel>Title</UiFormLabel>
+            <UiFormControl>
+              <UiInput type="text" placeholder="" v-bind="componentField" />
+            </UiFormControl>
+            <UiFormDescription>
+              This is your public display name. It can be your real name or a pseudonym.
+            </UiFormDescription>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
 
-      <UiFormField v-slot="{ componentField }" name="date">
-        <UiFormItem>
-          <UiFormLabel>Date</UiFormLabel>
-          <UiFormControl>
-            <UiDatePicker v-bind="componentField" />
-          </UiFormControl>
-          <UiFormDescription>
-            This is your public display name. It can be your real name or a pseudonym.
-          </UiFormDescription>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="date">
+          <UiFormItem>
+            <UiFormLabel>Date</UiFormLabel>
+            <UiFormControl>
+              <UiDatePicker v-bind="componentField" />
+            </UiFormControl>
+            <UiFormDescription>
+              This is your public display name. It can be your real name or a pseudonym.
+            </UiFormDescription>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
 
-      <UiFormField v-slot="{ componentField }" name="color">
-        <UiFormItem>
-          <UiFormLabel>Color</UiFormLabel>
-          <UiFormControl>
-            <ColorPicker v-bind="componentField" />
-          </UiFormControl>
-          <UiFormDescription>
-            This is your public display name. It can be your real name or a pseudonym.
-          </UiFormDescription>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="color">
+          <UiFormItem>
+            <UiFormLabel>Color</UiFormLabel>
+            <UiFormControl>
+              <ColorPicker v-bind="componentField" />
+            </UiFormControl>
+            <UiFormDescription>
+              This is your public display name. It can be your real name or a pseudonym.
+            </UiFormDescription>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
 
-      <UiFormField v-slot="{ componentField }" name="type">
-        <UiFormItem>
-          <UiFormLabel>Type</UiFormLabel>
-          <UiFormControl>
-            <UiSelect v-bind="componentField">
-              <UiSelectTrigger>
-                <UiSelectValue placeholder="Select card type" />
-              </UiSelectTrigger>
-              <UiSelectContent>
-                <UiSelectGroup>
-                  <UiSelectItem v-for="(type, key) of eventType" :key="key" :value="type">
-                    {{ key }}
-                  </UiSelectItem>
-                </UiSelectGroup>
-              </UiSelectContent>
-            </UiSelect>
-          </UiFormControl>
-          <UiFormDescription>
-            This is your public display name. It can be your real name or a pseudonym.
-          </UiFormDescription>
-          <UiFormMessage />
-        </UiFormItem>
-      </UiFormField>
+        <UiFormField v-slot="{ componentField }" name="type">
+          <UiFormItem>
+            <UiFormLabel>Type</UiFormLabel>
+            <UiFormControl>
+              <UiSelect v-bind="componentField">
+                <UiSelectTrigger>
+                  <UiSelectValue placeholder="Select card type" />
+                </UiSelectTrigger>
+                <UiSelectContent>
+                  <UiSelectGroup>
+                    <UiSelectItem v-for="(type, key) of eventType" :key="key" :value="type">
+                      {{ key }}
+                    </UiSelectItem>
+                  </UiSelectGroup>
+                </UiSelectContent>
+              </UiSelect>
+            </UiFormControl>
+            <UiFormDescription>
+              This is your public display name. It can be your real name or a pseudonym.
+            </UiFormDescription>
+            <UiFormMessage />
+          </UiFormItem>
+        </UiFormField>
+      </div>
 
-      <div class="flex gap-2 justify-start">
-        <UiButton type="submit">
-          Update profile
+      <div class="rounded-xl mt-8 bg-gray-50 p-4 border">
+        <h2 class="capitalize text-lg text-foreground font-semibold leading-none tracking-tight">
+          {{ values.type }} section
+        </h2>
+
+        <EventSettingsLink v-if="values.type === 'link'" ref="subSectionInstance" :metadata="values.metadata" />
+        <EventSettingsAlbum v-if="values.type === 'album'" ref="subSectionInstance" :metadata="values.metadata" @update="handleAlbumUpdate" />
+      </div>
+
+      <div class="flex gap-2 justify-start mt-4">
+        <UiButton type="submit" :loading="isLoading" :disabled="!meta.dirty || !meta.valid">
+          Update event
         </UiButton>
 
         <UiButton
