@@ -34,7 +34,7 @@ definePageMeta({
     <ul class="w-2/5 pr-8">
       <AccordionRoot v-model="activeId" type="single" collapsible>
         <AccordionItem v-for="event in data" :key="event.id" :value="event.id" class="mb-4">
-          <AccordionTrigger class="px-3 py-2 text-sm rounded-lg border border-yellow-200 data-[state=open]:bg-yellow-200 hover:bg-yellow-100 bg-yellow-50">
+          <AccordionTrigger class="px-3 py-2 text-sm rounded-lg border border-none data-[state=open]:bg-gray-200 hover:bg-gray-200 bg-gray-100">
             <span>{{ format(new Date(event.date), 'MMM dd') }} - </span>
             <span>{{ event.title }}</span>
           </AccordionTrigger>

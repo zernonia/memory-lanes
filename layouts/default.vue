@@ -8,8 +8,9 @@ const { slug } = useProfile()
 <template>
   <div class="min-h-screen flex flex-col">
     <header class="flex p-4">
-      <NuxtLink to="/">
-        Calendar
+      <NuxtLink to="/" class="flex items-center gap-2 text-gray-400 hover:text-gray-500 transition">
+        <img src="/logo.svg">
+        <span class="font-semibold text-2xl">MemoryLane</span>
       </NuxtLink>
       <div class="mx-auto" />
 
