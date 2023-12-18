@@ -15,8 +15,11 @@ const { data, refresh } = await useAsyncData(`events`, async () => {
 })
 
 const store = useEditStore()
+const activeId = ref('')
 
-function handleSave() {
+function handleSave(id?: string) {
+  if (id)
+    activeId.value = id
   refresh()
 }
 async function handleDelete() {
@@ -25,8 +28,6 @@ async function handleDelete() {
   await client.from('events').delete().eq('id', store.event?.id)
   refresh()
 }
-
-const activeId = ref('')
 
 watch(activeId, (n) => {
   // If no tab is selected, clear event in store

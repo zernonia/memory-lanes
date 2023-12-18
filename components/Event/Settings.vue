@@ -14,7 +14,7 @@ const props = defineProps<{
   event?: Event
 }>()
 const emits = defineEmits<{
-  save: []
+  save: [val?: string]
   delete: []
 }>()
 
@@ -67,13 +67,13 @@ const onSubmit = handleSubmit(async (values) => {
 
   isLoading.value = true
   console.log(values)
-  await client.from('events').upsert({ ...store.event, user_id: user.value?.id ?? '' })
+  const { data } = await client.from('events').upsert({ ...store.event, user_id: user.value?.id ?? '' }).select('id').single()
 
   // toast({
   //   title: 'You submitted the following values:',
   //   description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
   // })
-  emits('save')
+  emits('save', data?.id)
   isLoading.value = false
 })
 
@@ -180,7 +180,7 @@ watch(values, (n) => {
       <div class="flex w-full justify-between items-center mt-4">
         <div class="flex gap-2 justify-start ">
           <UiButton type="submit" :loading="isLoading" :disabled="!meta.dirty || !meta.valid">
-            Update event
+            {{ event?.id ? 'Update' : 'Create' }} event
           </UiButton>
 
           <UiButton

@@ -26,10 +26,11 @@ onMounted(() => {
 })
 
 const client = useSupabaseClient<Database>()
+
 const { data } = await useAsyncData(`events-${username.value}`, async () => {
   const { data } = await client
     .from('events')
-    .select('*, profiles(slug)')
+    .select('*, profiles!inner(slug)')
     .eq('profiles.slug', username.value)
     .order('date', { ascending: true })
   return data
@@ -41,14 +42,20 @@ const groupedEvents = computed(() => groupBy(data.value, 'date'))
 <template>
   <div ref="el" class="no-scrollbar overflow-auto">
     <div class="flex h-full w-full">
-      <div v-for="(group, key) of groupedEvents" :key="key" class="shrink-0 w-[60vw] md:w-[300px] xl:w-[20vw] relative flex flex-col">
-        <div class="text-center pb-4">
-          <span class="font-medium ">{{ format(new Date(key), 'd MMM') }}</span>
-        </div>
+      <template v-if="Object.keys(groupedEvents).length">
+        <div v-for="(group, key) of groupedEvents" :key="key" class="shrink-0 w-[60vw] md:w-[300px] xl:w-[20vw] relative flex flex-col">
+          <div class="text-center pb-4">
+            <span class="font-medium ">{{ format(new Date(key), 'd MMM') }}</span>
+          </div>
 
-        <div class="grid grid-rows-4 grid-flow-row-dense h-full p-1 pb-24">
-          <EventCard v-for="event in group" :key="event.id" :event="event" />
+          <div class="grid grid-rows-4 grid-flow-row-dense h-full p-1 pb-24">
+            <EventCard v-for="event in group" :key="event.id" :event="event" />
+          </div>
         </div>
+      </template>
+
+      <div v-else class="w-screen flex items-center justify-center">
+        <span class="text-muted-foreground font-semibold">No events yet</span>
       </div>
     </div>
   </div>

@@ -16,7 +16,7 @@ const { slug } = useProfile()
 
       <div class="flex items-center gap-4">
         <template v-if="slug">
-          <UiButton v-if="route.name !== 'u-username'" as-child variant="ghost" class="gap-2">
+          <UiButton v-if="route.path !== `/u/${slug}`" as-child variant="ghost" class="gap-2">
             <NuxtLink :to="`/u/${slug}`">
               <CalendarIcon />
               <span>My Calendar</span>
