@@ -35,7 +35,7 @@ const user = useSupabaseUser()
           draggable="false"
         >
           <div class="flex-1">
-            <h5 class="text-lg font-medium">
+            <h5 class="text-lg font-semibold">
               My 2023
             </h5>
           </div>

@@ -17,7 +17,7 @@ const mapType = {
 <template>
   <Primitive
     as-child
-    class="bg-[var(--color)] relative flex flex-col border-[5px] border-white w-full h-full rounded-xl p-4 shadow-none transition duration-300 active:scale-[97.5%]"
+    class="bg-[var(--color)] relative text-left flex flex-col border-[5px] border-white w-full h-full rounded-xl p-4 shadow-none transition duration-300 active:scale-[97.5%] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
     :class="{
       'hover:shadow-xl': event.color !== 'Transparent',
     }"

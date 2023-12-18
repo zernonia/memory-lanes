@@ -1,0 +1,19 @@
+.scale-in-fade-enter-active,
+.scale-in-fade-leave-active { 
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.scale-in-fade-enter-from,
+.scale-in-fade-leave-to {
+  @apply opacity-0 scale-75
+}
+
+.scale-out-fade-enter-active,
+.scale-out-fade-leave-active { 
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.scale-out-fade-enter-from,
+.scale-out-fade-leave-to {
+  @apply opacity-0 scale-[1.1]
+}

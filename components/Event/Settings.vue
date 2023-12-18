@@ -81,6 +81,7 @@ const isDeleting = ref(false)
 function handleDelete() {
   emits('delete')
   isDeleting.value = true
+  store.event = undefined
 }
 
 watch(values, (n) => {

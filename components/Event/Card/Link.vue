@@ -10,7 +10,7 @@ defineProps<{
 
 <template>
   <NuxtLink v-if="event.type === 'link'" :to="event.metadata?.url" target="_blank" class="group overflow-hidden relative">
-    <h2 class="font-medium">
+    <h2 class="font-semibold">
       {{ event.title }}
     </h2>
 
