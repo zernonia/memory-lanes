@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
 import { useForm } from 'vee-validate'
+import { TrashIcon } from '@radix-icons/vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 import { getKeys, getValues } from '@/lib/utils'
@@ -14,6 +15,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   save: []
+  delete: []
 }>()
 
 const user = useSupabaseUser()
@@ -74,6 +76,12 @@ const onSubmit = handleSubmit(async (values) => {
   emits('save')
   isLoading.value = false
 })
+
+const isDeleting = ref(false)
+function handleDelete() {
+  emits('delete')
+  isDeleting.value = true
+}
 
 watch(values, (n) => {
   console.log(n)
@@ -159,7 +167,7 @@ watch(values, (n) => {
         </UiFormField>
       </div>
 
-      <div class="rounded-xl mt-8 bg-gray-50 p-4 border">
+      <div class="rounded-xl mt-8 bg-muted p-4 border">
         <h2 class="capitalize text-lg text-foreground font-semibold leading-none tracking-tight">
           {{ values.type }} section
         </h2>
@@ -168,17 +176,28 @@ watch(values, (n) => {
         <EventSettingsAlbum v-if="values.type === 'album'" ref="subSectionInstance" :metadata="values.metadata" @update="handleAlbumUpdate" />
       </div>
 
-      <div class="flex gap-2 justify-start mt-4">
-        <UiButton type="submit" :loading="isLoading" :disabled="!meta.dirty || !meta.valid">
-          Update event
-        </UiButton>
+      <div class="flex w-full justify-between items-center mt-4">
+        <div class="flex gap-2 justify-start ">
+          <UiButton type="submit" :loading="isLoading" :disabled="!meta.dirty || !meta.valid">
+            Update event
+          </UiButton>
+
+          <UiButton
+            type="button"
+            variant="outline"
+            @click="resetForm"
+          >
+            Reset form
+          </UiButton>
+        </div>
 
         <UiButton
-          type="button"
-          variant="outline"
-          @click="resetForm"
+          variant="destructive"
+          size="icon"
+          :loading="isDeleting"
+          @click.prevent.stop="handleDelete"
         >
-          Reset form
+          <TrashIcon />
         </UiButton>
       </div>
     </form>

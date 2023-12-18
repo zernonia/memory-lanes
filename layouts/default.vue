@@ -10,7 +10,7 @@ const { slug } = useProfile()
     <header class="flex p-4">
       <NuxtLink to="/" class="flex items-center gap-2 text-gray-400 hover:text-gray-500 transition">
         <img src="/logo.svg">
-        <span class="font-semibold text-2xl">MemoryLane</span>
+        <span class="font-semibold text-2xl">MemoryLanes</span>
       </NuxtLink>
       <div class="mx-auto" />
 

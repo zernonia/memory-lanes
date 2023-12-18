@@ -10,7 +10,7 @@ const user = useSupabaseUser()
       <h1 class="text-5xl lg:text-6xl font-bold text-center">
         Create your Memory Lane for 2023
       </h1>
-      <h2 class="my-8 text-3xl lg:text-4xl font-medium text-gray-300 text-center">
+      <h2 class="my-8 text-2xl lg:text-3xl font-medium text-gray-300 text-center">
         Recap your year by crafting the most memorable timeline <br>
         and share with your friends!
       </h2>
@@ -24,7 +24,7 @@ const user = useSupabaseUser()
 
     <section class="p-24 flex flex-col items-center">
       <h3 class="text-xl font-medium">
-        Checkout some memory lane ❤️
+        Checkout some memory lanes ❤️
       </h3>
 
       <div>

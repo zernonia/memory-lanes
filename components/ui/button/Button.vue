@@ -22,7 +22,7 @@ withDefaults(defineProps<Props>(), {
     :class="cn(buttonVariants({ variant, size }), $attrs.class ?? '')"
     :disabled="loading"
   >
-    <slot />
-    <ReloadIcon v-if="loading" class="w-4 h-4 ml-2 animate-spin" />
+    <slot v-if="!loading" />
+    <ReloadIcon v-else class="w-4 h-4 animate-spin" />
   </Primitive>
 </template>

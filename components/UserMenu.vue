@@ -27,7 +27,7 @@ async function handleLogout() {
             <UiAvatarImage :src="profile?.avatar_url ?? ''" />
             <UiAvatarFallback>{{ profile?.full_name?.[0] }}</UiAvatarFallback>
           </UiAvatar>
-          <div v-else class="border rounded-full p-2 bg-gray-50">
+          <div v-else class="border rounded-full p-2 bg-muted">
             <PersonIcon class="w-5 h-5 text-gray-400" />
           </div>
         </UiButton>
